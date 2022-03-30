@@ -12,13 +12,36 @@ class Books
         @booking_time = ""
         @expire_time = ""
     end
-
-    def random_book
-        data = File.read("booklist.json")
-        parsed = JSON.parse(data).sample
-        puts "Today's Book is " + "#{parsed["title"]}".colorize(:red).on_blue.underline + " by " +  "#{parsed["author"]}.".colorize(:red).on_blue.underline
+    def read_booklist(file)
+        data = File.read(file)
+        # data.close
+        return JSON.parse(data) # return array of hash from json file
     end
     
+    def introduce_a_book(file)
+        parsed = read_booklist(file).sample
+        puts "======================================================================"
+        puts "Today's Book is " + "#{parsed["title"]}".colorize(:red).on_blue.underline + " by " +  "#{parsed["author"]}.".colorize(:red).on_blue.underline
+        puts "======================================================================"
+    end
+    def find_a_book
+        read_booklist(file)
+    end
+    def make_a_booking
+
+    end
+
+    def update_booking_time
+
+    end
+
+    def update_expire_date
+
+    end
+
+    def update_return
+
+    end
 
         
 end
