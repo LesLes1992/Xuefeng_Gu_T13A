@@ -27,29 +27,98 @@ def system_clear
     logo
 end
 
-def main_header
+def sign_up
+    user = create_profile
+    save_profile(user)
+    return user #return a hash
+end
+
+def log_in
+    array_profile = read_profile
+    check_user(array_profile)
+end 
+
+def main_interface
     prompt = TTY::Prompt.new
-    options = ["Sign up", "Log in", "Exit"]
     logo
-    puts "Welcome to Coder's Library!"
-    prompt.select("How can I help you?", options)
+    prompt.select("How can I help you?") do |menu|
+        menu.choice "Sign up",-> {sign_up}
+        menu.choice "Log in",-> {log_in}
+        menu.choice "Exit",-> {exit}
+    end
 end
 
-def user_header (username)
+def introduce_option 
     prompt = TTY::Prompt.new
-    options = ["Introduce a book", "Make a booking", "Return the book", "Exit"]
-    system_clear
-    puts "Welcome back #{username}."
-    prompt.select("How can I help you?", options)
-end
-
-def introduce_header 
-    prompt = TTY::Prompt.new
-    options = ["Make a booking", "Exit"]
+    options = ["Borrow the book", "Go upper level", "Exit"]
     prompt.select("What to do next?", options)
 end
-#create a sign-up profile and 
-def create_profile(file)
+
+def introduce_control(option,book_name)
+    if option == "Borrow the book"
+        book = Books.new
+        book.make_a_booking(book_name)
+    elsif option ==  "Go upper level"
+        user_interface
+    else
+        exit
+    end
+end
+
+def up_or_exit
+    prompt = TTY::Prompt.new
+    prompt.select("Do you wanna go upper page or exit?") do |menu|
+        menu.choice "Go back upper level",-> {user_interface}
+        menu.choice "Exit",-> {exit}
+    end
+end
+
+def introduce_a_book
+    system_clear
+    book = Books.new
+    book_name= book.introduce_a_book
+    introduce_result = introduce_option
+    introduce_control(introduce_result, book_name)
+    up_or_exit
+end
+
+def borrow_a_book
+    system_clear
+    print "Input your book >>"
+    book_name = gets.chomp
+    book = Books.new
+    book.make_a_booking(book_name)
+    up_or_exit
+end
+    
+def return_the_book
+    system_clear
+    print "Input the name of the returning book >>"
+    book =  Books.new
+    book.return_a_book
+    up_or_exit
+end
+
+def user_interface 
+    prompt = TTY::Prompt.new
+    system_clear
+    puts "Welcome back."
+    prompt.select("How can I help you?") do |menu|
+        menu.choice "Introduce a book",-> {introduce_a_book}
+        menu.choice "Borrow a book",-> {borrow_a_book}
+        menu.choice "Return the book",-> {return_the_book}
+        menu.choice "Exit",-> {exit}
+    end
+end
+
+
+def read_profile(file = 'profile.json')
+    data = File.read(file)
+    # data.close
+    return JSON.parse(data) # return array of hash from json file
+end
+
+def create_profile(file = 'profile.json')
     system_clear
     array = read_profile(file)
     username = get_username(array)
@@ -57,10 +126,10 @@ def create_profile(file)
     return {"user" => username , "password" => password}
 end
 
-def read_profile(file)
-    data = File.read(file)
-    # data.close
-    return JSON.parse(data) # return array of hash from json file
+def save_profile(user,file = 'profile.json')
+    array = read_profile(file)
+    array << user
+    File.write(file, JSON.pretty_generate(array))
 end
 
 def get_username(array)
@@ -77,29 +146,23 @@ def get_username(array)
         end
     end
     return username
+
 end
 
 def get_password
     loop_2 = "continue"
-    print "Password >> "
+    puts "Password >> "
     while loop_2 != "stop"
         password =  STDIN.noecho(&:gets).chomp!
-        print "Re-enter your password >> "   
+        puts "Re-enter your password >> "   
         password_sec = STDIN.noecho(&:gets).chomp!
         if password != password_sec
-            print "Invalida password input, please try again >>"
+            puts "Invalida password input, please try again >>"
         else
             loop_2 ="stop"
         end
     end
     return password
-end
-
-def save_profile(user,file)
-    array = read_profile(file)
-    array << user
-    File.write(file, JSON.pretty_generate(array))
-    # json.close
 end
 
 def check_user(array)
@@ -108,17 +171,17 @@ def check_user(array)
     while loop != "stop"
         # system_clear
         username = gets.chomp
-        print "Input your password >>"
+        puts "Input your password >>"
         password = STDIN.noecho(&:gets).chomp!
         if array.any? {|hash| hash["user"] == username}   #check the input username in the array of hash
             user = array.select {|hash| hash["user"] == username} #select hash username is equal to the input username
             if user[0]["password"] == password
                 loop = "stop"
             else
-                print "\nInvalidate username or password,please try again >>"
+                puts "Invalidate username or password,please re-enter your username >>"
             end
         else
-            print "\nInvalidate username or password,please try again >>"
+            puts "Invalidate username or password,please re-enter your username >>"
         end
     end
     return username
@@ -128,62 +191,27 @@ def check_user_output
     puts "Invalidate username or password,please try again >>"
 end
 
-def option_main_control(option)
-    if  option== "Sign up"
-        user = create_profile('profile.json')
-        save_profile(user, 'profile.json')
-        return user 
-    elsif option == "Log in"
-        array_profile = read_profile('profile.json')
-        check_user(array_profile)
-    else 
-        exit
-    end
+def main
+    main_interface
+    user_interface
 end
 
-
-def option_user_control(option, username)
-    if option == "Introduce a book"
-        system_clear
-        book = Books.new
-        book_name= book.introduce_a_book
-        option_introduce = introduce_header 
-        introduce_control(option_introduce, username,book_name)
-    elsif option == "Make a booking"
-        system_clear
-        print "Input your book >>"
-        book_name = gets.chomp
-        book = Books.new
-        book.make_a_booking(book_name)
-    elsif option == "Return the book"
-        system_clear
-        print "Input the name of the returning book >>"
-        book =  Books.new
-        book.return_a_book
-    else
-        exit
-    end
-end
-
-def introduce_control(option, username,book_name)
-    if option == "Make a booking"
-        book = Books.new
-        book.make_a_booking(book_name)
-    else
-        exit
-    end
-end
-
-
-
-def main 
-    option_main = main_header
-    username = option_main_control(option_main)
-    option_user = user_header(username)
-    option_user_control(option_user,username) 
-end
 
 if ARGV.size == 0
     main
+
+else ARGV.include? "--help" and ARGV.size == 1
+    puts "Welcome to the CB Finance Help Room"
+    puts "To use this app, follow these instructions"
+    puts "1) Direct your terminal to the src folder containing this application"
+    puts "2) type ./manual_install.sh - This will install all dependencies for my application"
+    puts "Alternatively, view the README.md doc or navigate to my github for installation instructions https://github.com/ChrisBaker-dev/TerminalApplication"
+    puts "3) View the README.md document for instructions on obtaining a API Key"
+    puts "Or navigate to my github account at https://github.com/ChrisBaker-dev/TerminalApplication"
+    puts "4)Once you have obtained your API Key, type [echo 'YOUR API KEY HERE' >> .env] in \nthe command line without the braces[]"
+    puts "This will automate the software to make loading the application much more efficient"
+    puts "\n\n"
+    puts "COMMANDS:"
+    puts "ruby main.rb --help"
 end
 

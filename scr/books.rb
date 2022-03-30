@@ -16,14 +16,13 @@ class Books
 
     def yes_no_prompt(hash)
         prompt = TTY::Prompt.new
-        options = ["Yes", "Exit"] 
-        answer = prompt.select("Do you want to make a booking for future picking up?", options)
-        if answer == "Yes"
-            Time.now.strftime("%B %d, %Y")
-        else
-            exit
+        prompt.select("Do you want to make a booking for future picking up?") do |menu|
+            menu.choice "Yes",-> {return "yes"}
+            menu.choice "Go upper level",-> {user_interface}
+            menu.choice "Exit",-> {exit}
         end
     end
+
 
     def read_booklist(file = 'booklist.json')
         data = File.read(file)
@@ -50,15 +49,18 @@ class Books
         book_hash = find_a_book(file ,bookname) 
         if book_hash != nil
             json_array.delete(book_hash)
-            if book_hash["returned"] == "no"
+            if book_hash["returned"] == "no" and book_hash["booking_time"] == "yes"
+                puts "Sorry, this booked has been booked.Someone will pick up after #{book_hash["expire_time"]}"
+            if book_hash["returned"] == "yes" and book_hash["booking_time"] == "yes"
+                puts "Sorry, this booked has been booked.Someone will pick up in the short future"
+            elsif book_hash["returned"] == "no"
                 puts "Sorry, this booked has been taken.It will be returned after #{book_hash["expire_time"]}"
                 book_hash["booking_time"] = yes_no_prompt(book_hash)
-            elsif book_hash["returned"] == "no" and book_hash["booking_time"] != nil
-                puts "Sorry, this booked has been taken.Someone will pick upclear after #{book_hash["expire_time"]}"
             else
                 book_hash["expire_time"] = (Time.new + 1209600).strftime("%B %d, %Y")
                 book_hash["returned"] = "no"
-                puts "Thank you making a booking, you have to return it by #{book_hash["expire_time"]}"  
+                puts "---------------------------------------------------------------------------------"
+                puts "Thank you borrowing the book, you have to return it by #{book_hash["expire_time"]}"  
             end
             json_array.unshift(book_hash)
             File.write(file, JSON.pretty_generate(json_array))   
@@ -70,8 +72,8 @@ class Books
 
     def return_a_book(file = 'booklist.json')
         json_array = read_booklist(file) # get the whole json array
-        loop = "continue"
-        while loop != "stop"
+        loop = 1
+        while loop < 10000
             bookname = gets.chomp
             book_hash = find_a_book(file ,bookname)
             if book_hash != nil
@@ -80,10 +82,14 @@ class Books
                 book_hash["expire_time"] = ""
                 json_array.unshift(book_hash)
                 File.write(file, JSON.pretty_generate(json_array))
-                loop = "stop"
+                loop = 10000
+                puts "You have successfully return the book"
+            elsif loop % 5 ==0
+                up_or_exit
             else
-                puts "Please input the bookname again >>"
+                print "Invalida book name. Please input the bookname again >>"
             end
+            loop += 1 
         end
     end
 
