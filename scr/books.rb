@@ -19,7 +19,7 @@ class Books
         options = ["Yes", "Exit"] 
         answer = prompt.select("Do you want to make a booking for future picking up?", options)
         if answer == "Yes"
-            return hash["booking_time"] = Time.now.strftime("%B %d, %Y")
+            Time.now.strftime("%B %d, %Y")
         else
             exit
         end
@@ -34,7 +34,7 @@ class Books
         parsed = read_booklist(file).sample #parsed is a hash
         puts "Today's Book is " + "#{parsed["title"]}".colorize(:red).on_blue.underline + " by " +  "#{parsed["author"]}.".colorize(:red).on_blue.underline
         puts "======================================================================"
-        return parsed["title"]
+        return parsed["title"] #return a bookname
     end
 
     def find_a_book(file = 'booklist.json',bookname)
@@ -52,7 +52,9 @@ class Books
             json_array.delete(book_hash)
             if book_hash["returned"] == "no"
                 puts "Sorry, this booked has been taken.It will be returned after #{book_hash["expire_time"]}"
-                return yes_no_prompt(book_hash)
+                book_hash["booking_time"] = yes_no_prompt(book_hash)
+            elsif book_hash["returned"] == "no" and book_hash["booking_time"] != nil
+                puts "Sorry, this booked has been taken.Someone will pick upclear after #{book_hash["expire_time"]}"
             else
                 book_hash["expire_time"] = (Time.new + 1209600).strftime("%B %d, %Y")
                 book_hash["returned"] = "no"
@@ -66,17 +68,23 @@ class Books
     end
 
 
-
-    def update_booking_time
-
-    end
-
-    def update_expire_date
-
-    end
-
-    def update_return
-
+    def return_a_book(file = 'booklist.json')
+        json_array = read_booklist(file) # get the whole json array
+        loop = "continue"
+        while loop != "stop"
+            bookname = gets.chomp
+            book_hash = find_a_book(file ,bookname)
+            if book_hash != nil
+                json_array.delete(book_hash)
+                book_hash["returned"] = "yes"
+                book_hash["expire_time"] = ""
+                json_array.unshift(book_hash)
+                File.write(file, JSON.pretty_generate(json_array))
+                loop = "stop"
+            else
+                puts "Please input the bookname again >>"
+            end
+        end
     end
 
         

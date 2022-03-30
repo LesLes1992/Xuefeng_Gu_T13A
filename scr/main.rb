@@ -115,10 +115,10 @@ def check_user(array)
             if user[0]["password"] == password
                 loop = "stop"
             else
-                print "Invalidate username or password,please try again >>"
+                print "\nInvalidate username or password,please try again >>"
             end
         else
-            print "Invalidate username or password,please try again >>"
+            print "\nInvalidate username or password,please try again >>"
         end
     end
     return username
@@ -156,7 +156,10 @@ def option_user_control(option, username)
         book = Books.new
         book.make_a_booking(book_name)
     elsif option == "Return the book"
-        exit
+        system_clear
+        print "Input the name of the returning book >>"
+        book =  Books.new
+        book.return_a_book
     else
         exit
     end
@@ -171,22 +174,13 @@ def introduce_control(option, username,book_name)
     end
 end
 
-def make_booking_control(option)
-end
-
-def return_book_control(option)
-end
-
-
-
 
 
 def main 
     option_main = main_header
     username = option_main_control(option_main)
     option_user = user_header(username)
-    option_user_control(option_user,username)
-    
+    option_user_control(option_user,username) 
 end
 
 if ARGV.size == 0
