@@ -34,5 +34,21 @@
   {
     "user": "xsa",
     "password": "dsa"
+  },
+  {
+    "user": "LL",
+    "password": "LSS"
+  },
+  {
+    "user": "exit",
+    "password": "ls"
+  },
+  {
+    "user": "LSL",
+    "password": "LL"
+  },
+  {
+    "user": "ll",
+    "password": "OO"
   }
 ]

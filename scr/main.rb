@@ -1,5 +1,6 @@
 require "tty-prompt"
 require "colorize"
+require 'json'
 require_relative "./books.rb"
 # require_relative "./profiles.rb"
 
@@ -34,18 +35,17 @@ def main_header
     prompt.select("How can I help you?", options)
 end
 
-def user_header 
+def user_header (username)
     prompt = TTY::Prompt.new
     options = ["Introduce a book", "Make a booking", "Return the book", "Exit"]
     system_clear
-    puts "Welcome to Coder's Library!"
+    puts "Welcome back #{username}."
     prompt.select("How can I help you?", options)
 end
 
 def introduce_header 
     prompt = TTY::Prompt.new
-    options = ["Go up level", "Make a booking", "Exit"]
-    puts "======================================================================"
+    options = ["Make a booking", "Exit"]
     prompt.select("What to do next?", options)
 end
 #create a sign-up profile and 
@@ -104,29 +104,27 @@ end
 
 def check_user(array)
     loop = "continue"
+    print "Input your username >>"
     while loop != "stop"
-        system_clear
-        print "Input your username >>"
+        # system_clear
         username = gets.chomp
         print "Input your password >>"
         password = gets.chomp
         if array.any? {|hash| hash["user"] == username}   #check the input username in the array of hash
             user = array.select {|hash| hash["user"] == username} #select hash username is equal to the input username
             if user[0]["password"] == password
-                puts"Welcome back #{username}."
                 loop = "stop"
             else
-                check_user_output
+                print "Invalidate username or password,please try again >>"
             end
         else
-            check_user_output
+            print "Invalidate username or password,please try again >>"
         end
     end
     return username
 end
 
 def check_user_output
-    system_clear
     puts "Invalidate username or password,please try again >>"
 end
 
@@ -138,37 +136,38 @@ def option_main_control(option)
     elsif option == "Log in"
         array_profile = read_profile('profile.json')
         check_user(array_profile)
-    else
-        system "quit"
+    else 
+        exit
     end
 end
 
 
-def option_user_control(option)
-    if option== "Introduce a book"
+def option_user_control(option, username)
+    if option == "Introduce a book"
         system_clear
         book = Books.new
-        book.introduce_a_book
-        option_introduce = introduce_header
-        introduce_control(option_introduce)
+        book_name= book.introduce_a_book
+        option_introduce = introduce_header 
+        introduce_control(option_introduce, username,book_name)
     elsif option == "Make a booking"
         system_clear
         print "Input your book >>"
-        book = gets.chomp
+        book_name = gets.chomp
+        book = Books.new
+        book.make_a_booking(book_name)
     elsif option == "Return the book"
         system_clear
     else
-        system "quit"
+        exit
     end
 end
 
-def introduce_control(option)
-    if  option == "Go up level"
-
-    elsif option == "Make a booking"
-        
+def introduce_control(option, username,book_name)
+    if option == "Make a booking"
+        book = Books.new
+        book.make_a_booking(book_name)
     else
-        system "quit"
+        exit
     end
 end
 
@@ -184,12 +183,13 @@ end
 
 def main 
     option_main = main_header
-    option_main_control(option_main)
-    option_user = user_header
-    option_user_control(option_user)
+    username = option_main_control(option_main)
+    option_user = user_header(username)
+    option_user_control(option_user,username)
     
 end
 
 if ARGV.size == 0
     main
 end
+
