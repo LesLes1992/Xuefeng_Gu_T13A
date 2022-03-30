@@ -14,6 +14,17 @@ class Books
         @expire_time = expire_time
     end
 
+    def yes_no_prompt(hash)
+        prompt = TTY::Prompt.new
+        options = ["Yes", "Exit"] 
+        answer = prompt.select("Do you want to make a booking for future picking up?", options)
+        if answer == "Yes"
+            return hash["booking_time"] = Time.now.strftime("%B %d, %Y")
+        else
+            exit
+        end
+    end
+
     def read_booklist(file = 'booklist.json')
         data = File.read(file)
         return JSON.parse(data) # return array of hash from json file
@@ -26,41 +37,31 @@ class Books
         return parsed["title"]
     end
 
-    def choose_book(book)
-        prompt = TTY::Prompt.new
-        options = ["Yes", "No", "Exit"]
-        prompt.select("Do you mean #{book["title"]} by #{book["author"]}?", options)
-    end
-
-    def find_a_book(file = 'booklist.json',title)
+    def find_a_book(file = 'booklist.json',bookname)
         array = read_booklist
-        if array.any? {|hash| hash["title"] == title}   
-            result= array.detect {|hash| hash["title"].include?(title)} # return a hash contain the key-value pair
-            return result
-            answer = choose_book(result)
-            if answer == "Yes"
-                
-            elsif answer == "No"
-                puts "Sorry, we don't have the book you looking for."
-            else 
-                exit
-            end
-        else    
-            puts "Sorry, we don't have the book you looking for."
+        if array.any? {|hash| hash["title"] == bookname}   
+            result= array.detect {|hash| hash["title"].include?(bookname)} 
+            return result  # return a hash contain the key-value pair
         end
     end
 
-    def make_a_booking(file = 'booklist.json',title)
+    def make_a_booking(file = 'booklist.json',bookname)
         json_array = read_booklist(file) # get the whole json array
-        book_hash = find_a_book(file ,title) # return a hash contain book information
-        json_array.delete(book_hash)
-        if book_hash["returned"] == "no"
-            puts "Sorry, this booked has been book.It will be returned after #{book_hash["expire_time"]}"
-        else
-            book_hash["expire_time"] = (Time.new + 1209600).strftime("%B %d, %Y")
+        book_hash = find_a_book(file ,bookname) 
+        if book_hash != nil
+            json_array.delete(book_hash)
+            if book_hash["returned"] == "no"
+                puts "Sorry, this booked has been taken.It will be returned after #{book_hash["expire_time"]}"
+                return yes_no_prompt(book_hash)
+            else
+                book_hash["expire_time"] = (Time.new + 1209600).strftime("%B %d, %Y")
+                book_hash["returned"] = "no"
+                puts "Thank you making a booking, you have to return it by #{book_hash["expire_time"]}"  
+            end
             json_array.unshift(book_hash)
-            File.write(file, JSON.pretty_generate(json_array))
-            puts "Thank you making a booking, you have to return it by #{book_hash["expire_time"]}"
+            File.write(file, JSON.pretty_generate(json_array))   
+        else
+            puts "We can't find your book"
         end
     end
 

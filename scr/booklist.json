@@ -1,12 +1,5 @@
 [
   {
-    "title": "Theodore Rex ",
-    "author": "Edmund Morris",
-    "returned": "no",
-    "booking_time": "March 30, 2022",
-    "expire_time": "April 13, 2022"
-  },
-  {
     "title": "The Great Gatsby ",
     "author": "F. Scott Fitzgerald ",
     "returned": "yes",
@@ -3579,6 +3572,13 @@
   {
     "title": "The Island of Dr. Moreau ",
     "author": "H.G. Wells",
+    "returned": "yes",
+    "booking_time": "",
+    "expire_time": ""
+  },
+  {
+    "title": "Theodore Rex ",
+    "author": "Edmund Morris",
     "returned": "yes",
     "booking_time": "",
     "expire_time": ""

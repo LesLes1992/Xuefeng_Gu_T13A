@@ -1,8 +1,8 @@
-require "tty-prompt"
-require "colorize"
+require 'tty-prompt'
+require 'colorize'
 require 'json'
 require_relative "./books.rb"
-# require_relative "./profiles.rb"
+require "io/console"
 
 
 
@@ -83,9 +83,9 @@ def get_password
     loop_2 = "continue"
     print "Password >> "
     while loop_2 != "stop"
-        password =  gets.chomp!
+        password =  STDIN.noecho(&:gets).chomp!
         print "Re-enter your password >> "   
-        password_sec = gets.chomp!
+        password_sec = STDIN.noecho(&:gets).chomp!
         if password != password_sec
             print "Invalida password input, please try again >>"
         else
@@ -109,7 +109,7 @@ def check_user(array)
         # system_clear
         username = gets.chomp
         print "Input your password >>"
-        password = gets.chomp
+        password = STDIN.noecho(&:gets).chomp!
         if array.any? {|hash| hash["user"] == username}   #check the input username in the array of hash
             user = array.select {|hash| hash["user"] == username} #select hash username is equal to the input username
             if user[0]["password"] == password
@@ -156,7 +156,7 @@ def option_user_control(option, username)
         book = Books.new
         book.make_a_booking(book_name)
     elsif option == "Return the book"
-        system_clear
+        exit
     else
         exit
     end
