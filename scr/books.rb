@@ -51,7 +51,7 @@ class Books
             json_array.delete(book_hash)
             if book_hash["returned"] == "no" and book_hash["booking_time"] == "yes"
                 puts "Sorry, this booked has been booked.Someone will pick up after #{book_hash["expire_time"]}"
-            if book_hash["returned"] == "yes" and book_hash["booking_time"] == "yes"
+            elsif book_hash["returned"] == "yes" and book_hash["booking_time"] == "yes"
                 puts "Sorry, this booked has been booked.Someone will pick up in the short future"
             elsif book_hash["returned"] == "no"
                 puts "Sorry, this booked has been taken.It will be returned after #{book_hash["expire_time"]}"
@@ -91,31 +91,5 @@ class Books
             end
             loop += 1 
         end
-    end
-
-        
+    end       
 end
-
-
-
-
-
-
-
-
-
-# pp parsed
-# pp parsed[0].class
-# pp parsed[0]["title"]
-
-# parsed[0]["returned"] = "no"
-# booking_time = Time.new
-# expire_time = booking_time + 1209600
-# parsed[0]["booking_time"] = booking_time.strftime("%B %d, %Y")
-# parsed[0]["expire_time"] = expire_time.strftime("%B %d, %Y")
-# File.write("Booklist.json", JSON.pretty_generate(parsed))
-
-# p parsed[0]
-
-
-# end

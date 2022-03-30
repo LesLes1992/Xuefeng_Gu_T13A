@@ -1,8 +1,8 @@
 require 'tty-prompt'
 require 'colorize'
 require 'json'
-require_relative "./books.rb"
-require "io/console"
+require './books.rb'
+require 'io/console'
 
 
 
