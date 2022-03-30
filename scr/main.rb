@@ -23,7 +23,7 @@ def logo
 end
 
 def system_clear
-    system"clear"
+    system "clear"
     logo
 end
 
@@ -40,7 +40,7 @@ end
 
 def main_interface
     prompt = TTY::Prompt.new
-    logo
+    system_clear
     prompt.select("How can I help you?") do |menu|
         menu.choice "Sign up",-> {sign_up}
         menu.choice "Log in",-> {log_in}
