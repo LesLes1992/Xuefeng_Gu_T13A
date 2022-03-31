@@ -31,7 +31,7 @@ class Books
     
     def introduce_a_book(file = 'booklist.json')
         parsed = read_booklist(file).sample #parsed is a hash
-        puts "Today's Book is " + "#{parsed["title"]}".colorize(:red).on_blue.underline + " by " +  "#{parsed["author"]}.".colorize(:red).on_blue.underline
+        puts "Today's Book is " + "#{parsed["title"]}".colorize(:red).on_blue+ " by " +  "#{parsed["author"]}.".colorize(:red).on_blue
         puts "======================================================================"
         return parsed["title"] #return a bookname
     end
