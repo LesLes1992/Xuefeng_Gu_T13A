@@ -13,7 +13,7 @@ class Books
         @booking_time = booking_time
         @expire_time = expire_time
     end
-
+#prompt for make a booking for borrowed books
     def yes_no_prompt(hash)
         prompt = TTY::Prompt.new
         prompt.select("Do you want to make a booking for future picking up?") do |menu|
@@ -23,7 +23,7 @@ class Books
         end
     end
 
-
+#read the booklist.json file
     def read_booklist(file = 'booklist.json')
         data = File.read(file)
         return JSON.parse(data) # return array of hash from json file

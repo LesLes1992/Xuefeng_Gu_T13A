@@ -28,7 +28,7 @@ Repository:
 https://github.com/LesLes1992/library
 
 Trello: 
-https://trello.com/b/rACuCMep/chris-finance-app
+https://trello.com/b/JqLdrOhr/t1a3-cli-aapplication
 
 ## R6 - Features
 ---
@@ -62,79 +62,117 @@ This feature will be basic feature to use an application. **Sign-up** will help 
 **Return a book** is another main feature, which let the user return the books they borrowed. After teh user return the book, the book status will be changed. **Expire-time** will be nil. And **Returned** will be "yes"
 
 ## R7 - Implementation Plan
-### Profile Creation
+### Sign-in and Log-in( Due 28/03/2022)
 Checklist
-1. Create a profile class to store data
-- Approximation of time needed to complete: 1 hours. Deadline: Wednesday April 7, 2021. Priority: HIGH.
-2. Create data structures to manage data
-- Approximation of time needed to complete: 2 hours. Deadline: Wednesday April 7, 2021. Priority: HIGH.
-3. Update profile class dependent on user purchasing actions
-- Approximation of time needed to complete:  6 hours. Deadline: Thursday April 8, 2021. Priority: HIGH.
-4. Read and write to JSON file
-- Approximation of time needed to complete: 4 hours. Deadline: Wednesday April 7, 2021. Priority: HIGH.
-5. Error Handling
-- Approximation of time needed to complete: 3 hours. Deadline: Saturday April 10, 2021. Priority: HIGH.
+* Create a prompt to let the user to create or type in their username and passwords
+  * REQUIRE: around 1 hours. 
+  *  Priority: High.
 
-### Execution of Trades (Buy/Sell)
+- ``Touch`` a ``profiles.json`` file to save the user informations.
+  - REQUIRE: 0.5 hours. 
+  - Priority: High.
+
+- Check if the username in the json file
+  - REQUIRE: 1 hours. 
+  - Priority: High.
+- Write the user's information into the json file
+  - REQUIRE: 1 hours. 
+  - Priority: High.
+- Check the username and password matching or not
+  - REQUIRE: 1 hours. 
+  - Priority: High.
+### Introduce a book(Due 29/03/2022)
 Checklist
-1. Create Stock class to manage data on the stock to trade
-- Approximation of time needed to complete: 1 hours. Deadline: Thursday April 8, 2021. Priority: HIGH.
-2. Connect communications with IEX API
-    - Ensure key is valid
-    - Get up to date stock information
-- Approximation of time needed to complete: 2 hours. Deadline: Saturday April 10, 2021. Priority: HIGH.
-
-3. Give feedback to user reguarding current prices
-- Approximation of time needed to complete: 1 hours. Deadline: Saturday April 10, 2021. Priority: HIGH.
-
-4. Process trade
-    - Validate trade
-    - Update profile data
-    - Feedback to user
-- Approximation of time needed to complete: 2 hours. Deadline: Saturday April 10, 2021. Priority: HIGH.
-
-5. Error Handling
-- Approximation of time needed to complete: 3 hours. Deadline: Sunday April 11, 2021. Priority: HIGH.
-
-### Profile/Investment Summaries
+- Build up an appropriate ``booklist.json`` file to contain all. the books information
+  - REQUIRE: 0.5 -1 hours. 
+  - Priority: Medium.
+- Create an appropriate prompt with ``TTY-Prompt``
+  - REQUIRE: 1 hours. 
+  - Priority: High
+- Present the result into an approprite format 
+  - REQUIRE: 0.5 hours. 
+  - Priority: Low.
+- Further user interface set-up
+  - REQUIRE: 0.5 -1hours. 
+  - Priority: Medium.
+- "Borrow this book? " and "Making a booking " functions set up
+  - Require: 2 hours. 
+  - Priority: High.
+### Borrow a book(Due 29/03/2022)
 Checklist
-1. Update data to be displayed 
-- Approximation of time needed to complete: 2 hours. Deadline: Friday April 9, 2021. Priority: HIGH.
+- Find a book to check if the book in the json file
+  - Require: 2 hours
+  - Priority: High.
 
-2. Create tables to display to user
-
- Approximation of time needed to complete: 1 hour. Deadline Friday April 9, 2021. Priority: HIGH.
-
-3. Make calculations to display to user
-
-Information needs to be calculated in order to get a proper summary. For example, all stock values need to be checked against their current values in order to see how much growth our profile has made. 
-- Approximation of time needed to complete: 1 hour. Deadline Friday April 9, 2021. Priority: HIGH.
-
-4. Utilize tty-table to format
-- Approximation of time needed to complete: 1 hours. Deadline: Friday April 9, 2021. Priority: HIGH.
+- Check if the book is the one 
+  - Require: 0.5 - 1 hours
+  - Priority: Low. 
 
 
-5. Test outputs are correct
+- Borrow the book 
 
-Testing is required to make sure tables are being generated properly. Handle exceptions for tables trying to be generated when no trades have been made. 
+  Change the books attribute values.
 
-- Approximation of time needed to complete: 3 hours. Deadline: Saturday April 11, 2021. Priority: HIGH.
+  - Require:  1-2 hours
+  - Priority: High. 
+
+- Make a booking if the book has been borrowed
+  - Require:  1 hours
+  - Priority:  Medium. 
+
+- Testing the json changed books attribute values as expectations.
+
+### Return a book(Due 30/03/2022)
+
+Checklist
+
+- Find a book to check if the book in the json file
+  - Require: 0.5-1 hours
+  - Priority: Low.
+- Check if the book is right name with loop
+  - Require: 2 hours
+  - Priority: High. 
+
+- Return the book method set up 
+
+  Change the books attribute values after return the books.
+
+  - Require:  1 hour
+  - Priority: High. 
+
+- Provide up coming choices after return the books
+
+  Go- upper level or exit
+
+  - Require:  0.5 hour
+  - Priority:  Low. 
+
+- Testing the json changed books attribute values as expectations.
 
 
 
 # R8 Help
 
-Download and install Ruby onto your computer. Instructions on how to do so can be found here: [Ruby installation guide](https://www.ruby-lang.org/en/documentation/installation/ "Ruby installation")
-
-Run this command in your terminal:
-```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ChrisBaker-dev/TerminalApplication/main/src/install.sh)"
-```
-
-**If you are having issues with this command you may need to check your gem paths**
-
 ### Hardware Requirements
 This application should run on all platforms. No known hardware requirements.
+
+### How to use the application
+
+**First** -- Download and install Ruby onto your computer. Instructions on how to do so can be found here: [Ruby installation guide](https://www.ruby-lang.org/en/documentation/installation/ "Ruby installation")
+
+**Next** -- open the terminal in MacOs or cmd in Windows system
+
+**Next** -- Use ``cd  ``commond line to change the directory to ``src`` folder.
+
+**Next** -- Install ``bundler`` gem into the system with code ``$ gem install bundler``
+
+**Next** -- Run code ``$ bundle install`` to install all the gems under this project. 
+
+**Next** -- Run code ``$ ruby main.rb`` to run the application.
+
+**TIPS** -- Run code ``ruby main.rb --help`` to search for help 
+
+
 
 
 

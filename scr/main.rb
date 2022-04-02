@@ -7,8 +7,7 @@ require 'io/console'
 
 
 
-#welcome message and provide options to choose
-#executed next accoding to user's input
+# define a logo messgae
 
 def logo
     puts "---------------------------------------------------------------------"
@@ -28,17 +27,20 @@ def system_clear
     logo
 end
 
+#sign-up feature to create a profile 
 def sign_up
     user = create_profile
     save_profile(user)
     return user #return a hash
 end
 
+#Log-in feature to check if the profile matching with the json file record
 def log_in
     array_profile = read_profile
     check_user(array_profile)
 end 
 
+#set-up main-interface prompt
 def main_interface
     prompt = TTY::Prompt.new
     system_clear
@@ -49,70 +51,7 @@ def main_interface
     end
 end
 
-def introduce_option 
-    prompt = TTY::Prompt.new
-    options = ["Borrow the book", "Go upper level", "Exit"]
-    prompt.select("What to do next?", options)
-end
-
-def introduce_control(option,book_name)
-    if option == "Borrow the book"
-        book = Books.new
-        book.make_a_booking(book_name)
-    elsif option ==  "Go upper level"
-        user_interface
-    else
-        exit
-    end
-end
-
-def up_or_exit
-    prompt = TTY::Prompt.new
-    prompt.select("Do you wanna go upper page or exit?") do |menu|
-        menu.choice "Go back upper level",-> {user_interface}
-        menu.choice "Exit",-> {exit}
-    end
-end
-
-def introduce_a_book
-    system_clear
-    book = Books.new
-    book_name= book.introduce_a_book
-    introduce_result = introduce_option
-    introduce_control(introduce_result, book_name)
-    up_or_exit
-end
-
-def borrow_a_book
-    system_clear
-    print "Input your book >>"
-    book_name = gets.chomp
-    book = Books.new
-    book.make_a_booking(book_name)
-    up_or_exit
-end
-    
-def return_the_book
-    system_clear
-    print "Input the name of the returning book >>"
-    book =  Books.new
-    book.return_a_book
-    up_or_exit
-end
-
-def user_interface 
-    prompt = TTY::Prompt.new
-    system_clear
-    puts "Welcome back."
-    prompt.select("How can I help you?") do |menu|
-        menu.choice "Introduce a book",-> {introduce_a_book}
-        menu.choice "Borrow a book",-> {borrow_a_book}
-        menu.choice "Return the book",-> {return_the_book}
-        menu.choice "Exit",-> {exit}
-    end
-end
-
-
+#sub-method which will be used within sign-in and login
 def read_profile(file = 'profile.json')
     data = File.read(file)
     # data.close
@@ -192,12 +131,80 @@ def check_user_output
     puts "Invalidate username or password,please try again >>"
 end
 
+#define a go-upper level propty which will be used with sub-user interfaces.
+def up_or_exit
+    prompt = TTY::Prompt.new
+    prompt.select("Do you wanna go upper page or exit?") do |menu|
+        menu.choice "Go back upper level",-> {user_interface}
+        menu.choice "Exit",-> {exit}
+    end
+end
+
+# For introduce a book feature
+def introduce_option 
+    prompt = TTY::Prompt.new
+    options = ["Borrow the book", "Go upper level", "Exit"]
+    prompt.select("What to do next?", options)
+end
+
+def introduce_control(option,book_name)
+    if option == "Borrow the book"
+        book = Books.new
+        book.make_a_booking(book_name)
+    elsif option ==  "Go upper level"
+        user_interface
+    else
+        exit
+    end
+end
+
+def introduce_a_book
+    system_clear
+    book = Books.new
+    book_name= book.introduce_a_book
+    introduce_result = introduce_option
+    introduce_control(introduce_result, book_name)
+    up_or_exit
+end
+
+#define borrow a book features which will let the user type in the book name
+def borrow_a_book
+    system_clear
+    print "Input your book >>"
+    book_name = gets.chomp
+    book = Books.new
+    book.make_a_booking(book_name)
+    up_or_exit
+end
+
+#define return book features which will let the user type in the bookname to change the book contibute values("returned" and "expire-time")
+def return_the_book
+    system_clear
+    print "Input the name of the returning book >>"
+    book =  Books.new
+    book.return_a_book
+    up_or_exit
+end
+
+def user_interface 
+    prompt = TTY::Prompt.new
+    system_clear
+    puts "Welcome back."
+    prompt.select("How can I help you?") do |menu|
+        menu.choice "Introduce a book",-> {introduce_a_book}
+        menu.choice "Borrow a book",-> {borrow_a_book}
+        menu.choice "Return the book",-> {return_the_book}
+        menu.choice "Exit",-> {exit}
+    end
+end
+
+# main with 2 main interfaces.
 def main
     main_interface
     user_interface
 end
 
-
+#setup "--help" feature to indicate help to users.
 if ARGV.size == 0
     main
 else ARGV == "--help"
