@@ -1,4 +1,4 @@
-# Xuefen Gu - T1A3 CLI Application
+# Xuefeng Gu - T1A3 CLI Application
 
 ## Description
 
